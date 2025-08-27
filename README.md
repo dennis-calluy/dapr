@@ -2,6 +2,8 @@
 
 ### Stale Actor State in Reminder with Reentrancy Enabled
 
+https://github.com/dapr/dotnet-sdk/issues/1615
+
 Description:
 
 When using a Dapr Actor with reentrancy enabled, the actor's state is stale when accessed within a reminder callback. The actor's state is being updated by an external method call, but the reminder's ReceiveReminderAsync method receives only the initial state.
