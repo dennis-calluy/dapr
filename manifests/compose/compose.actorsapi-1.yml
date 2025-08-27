@@ -1,0 +1,36 @@
+services:
+  actorsapi-1:
+    image: actorsapi:latest
+    build:
+      context: ../..
+      dockerfile: ./src/actorsapi/Dockerfile
+    ports:
+      - 8080:8080
+      - 3500:3500 # expose sidecar for testing purposes
+    depends_on:
+      - redis
+      - dapr-placement
+    restart: unless-stopped
+    environment:
+      Logging__LogLevel__Default: Information
+
+  # dapr sidecar
+  actorsapi-1-dapr:
+    image: "daprio/daprd:edge"
+    network_mode: "service:actorsapi-1"
+    depends_on:
+      - actorsapi-1
+    command: ["./daprd",
+      "--app-id", "actorsapi-1",
+      "--app-port", "8080",
+      "--log-level", "info",
+      "--placement-host-address", "dapr-placement:50006",
+      "--scheduler-host-address", "dapr-scheduler:50007",
+      "--dapr-http-port", "3500",
+      "--dapr-grpc-port", "50001",
+      "--resources-path", "./components",
+      "--config", "/configuration/config.yaml"
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"

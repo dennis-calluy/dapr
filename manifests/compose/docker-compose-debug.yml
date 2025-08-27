@@ -1,0 +1,3 @@
+include:
+  - compose.actorsapi-1-debug.yml
+  - compose.dapr.yml

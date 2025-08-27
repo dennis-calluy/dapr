@@ -1,0 +1,46 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: actorsapi
+  labels:
+    app: actorsapi
+spec:
+  type: LoadBalancer
+  selector:
+    app: actorsapi
+  ports:
+  - name: app-port
+    protocol: TCP
+    port: 8080
+    targetPort: app-port
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actorsapi
+  labels:
+    app: actorsapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: actorsapi
+  template:
+    metadata:
+      labels:
+        app: actorsapi
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "actorsapi"
+        dapr.io/app-port: "8080"
+        dapr.io/sidecar-listen-addresses: "0.0.0.0"
+        dapr.io/log-level: "debug"
+    spec:
+      containers:
+      - name: actorsapi
+        imagePullPolicy: IfNotPresent
+        image: actorsapi:latest
+        ports:
+        - name: app-port
+          containerPort: 8080

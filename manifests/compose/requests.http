@@ -1,0 +1,17 @@
+# set actor state
+POST http://localhost:8080/setstate?numberState=11
+
+###
+
+# get actor state
+POST http://localhost:8080/getstate
+
+###
+
+# register actor reminder
+POST http://localhost:8080/registerreminder
+
+###
+
+# unregister actor reminder
+POST http://localhost:8080/unregisterreminder
